@@ -2,8 +2,6 @@ import { CatCard } from '../../../entities/cat/ui/CatCard.tsx'
 import { ErrorInfo } from '../../error/ErrorInfo.tsx'
 import { Preloader } from '../../preloader/Preloader.tsx'
 import { Cat } from '../../../entities/cat/types/catTypes.ts'
-import Pagination from '../../pagination/ui/Pagination.tsx'
-import { useState } from 'react'
 
 export interface CatsListProps {
   catsData: {
@@ -15,12 +13,6 @@ export interface CatsListProps {
 
 export const CatsList = ({ catsData }: CatsListProps) => {
   const { data: cats, isLoading, error } = catsData
-  const [currentPage, setCurrentPage] = useState(1)
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page)
-  }
-
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[calc(100vh-150px)]">
@@ -45,11 +37,6 @@ export const CatsList = ({ catsData }: CatsListProps) => {
             <CatCard cat={cat} key={cat.id} />
           ))}
         </div>
-        <Pagination
-          currentPage={currentPage}
-          totalPages={2}
-          onPageChange={handlePageChange}
-        />
       </>
     )
   }
