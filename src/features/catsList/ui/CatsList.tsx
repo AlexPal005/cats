@@ -1,24 +1,22 @@
 import { CatCard } from '../../../entities/cat/ui/CatCard.tsx'
-import { useGetCats } from '../../../entities/cat/api/getCats.ts'
 import { ErrorInfo } from '../../error/ErrorInfo.tsx'
 import { Preloader } from '../../preloader/Preloader.tsx'
-import { useSelectedBreedStore } from '../../cats-filter/model/useSelectedBreedStore.ts'
+import { Cat } from '../../../entities/cat/types/catTypes.ts'
 
-export const CatsList = () => {
-  const { selectedBreed } = useSelectedBreedStore()
-  const {
-    data: cats,
-    isLoading,
-    error,
-  } = useGetCats(undefined, selectedBreed?.id)
+export interface CatsListProps {
+  catsData: {
+    data: Cat[] | undefined
+    isLoading: boolean
+    error: unknown
+  }
+}
 
-  // useEffect(() => {
-  //   console.log(cats)
-  // }, [cats])
+export const CatsList = ({ catsData }: CatsListProps) => {
+  const { data: cats, isLoading, error } = catsData
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center min-h-[calc(100vh-150px)]">
         <Preloader />
       </div>
     )
@@ -26,7 +24,7 @@ export const CatsList = () => {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center min-h-[calc(100vh-150px)]">
         <ErrorInfo message="Error while retrieving cats!" />
       </div>
     )
@@ -41,4 +39,10 @@ export const CatsList = () => {
       </div>
     )
   }
+
+  return (
+    <div className="flex items-center justify-center min-h-[calc(100vh-150px)]">
+      <p>No cats found</p>
+    </div>
+  )
 }

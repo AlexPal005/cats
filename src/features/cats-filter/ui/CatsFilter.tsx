@@ -3,6 +3,7 @@ import { useSearchBreeds } from '../../../entities/cat/api/searchBreeds.ts'
 import { Preloader } from '../../preloader/Preloader.tsx'
 import { Breed } from '../../../entities/cat/types/catTypes.ts'
 import { useSelectedBreedStore } from '../model/useSelectedBreedStore.ts'
+import useClickOutside from '../model/useClickOutside.ts'
 
 export const CatsFilter = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false)
@@ -10,6 +11,7 @@ export const CatsFilter = () => {
   const [debouncedSearchBreed, setDebouncedSearchBreed] = useState<string>('')
   const { data: breeds, isLoading } = useSearchBreeds(debouncedSearchBreed)
   const dropdownRef = useRef<HTMLDivElement>(null)
+  useClickOutside(dropdownRef, () => setIsDropdownOpen(false))
   const { selectedBreed, setSelectedBreed, clearSelectedBreed } =
     useSelectedBreedStore()
 
@@ -20,24 +22,6 @@ export const CatsFilter = () => {
 
     return () => clearTimeout(timer)
   }, [searchBreed])
-
-  useEffect(() => {
-    console.log(breeds)
-  }, [breeds])
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsDropdownOpen(false)
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [])
 
   const handleSearchChange = (e: { target: { value: string } }) => {
     setSearchBreed(e.target.value)
@@ -54,12 +38,6 @@ export const CatsFilter = () => {
     setIsDropdownOpen(false)
   }
 
-  const handleSearchCats = () => {
-    if (selectedBreed) {
-      console.log(`Searching cats for breed: ${selectedBreed}`)
-    }
-  }
-
   return (
     <div className="relative w-full max-w-md">
       <div className="flex items-center">
@@ -69,7 +47,7 @@ export const CatsFilter = () => {
           onChange={handleSearchChange}
           className="w-full p-2 border rounded-md pr-12"
           placeholder="Search for cat breed..."
-          onFocus={() => setIsDropdownOpen(true)} // відкриваємо список при фокусі
+          onFocus={() => setIsDropdownOpen(true)}
         />
 
         {isLoading && (
@@ -110,18 +88,6 @@ export const CatsFilter = () => {
           Please select a breed to search for cats
         </div>
       )}
-
-      <button
-        onClick={handleSearchCats}
-        disabled={!selectedBreed}
-        className={`mt-4 w-full py-2 px-4 rounded-md ${
-          selectedBreed
-            ? 'bg-blue-500 text-white'
-            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-        }`}
-      >
-        Search Cats
-      </button>
     </div>
   )
 }

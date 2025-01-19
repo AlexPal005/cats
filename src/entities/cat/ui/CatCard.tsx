@@ -1,31 +1,22 @@
 import { Cat } from '../types/catTypes.ts'
 import { FaHeart } from 'react-icons/fa'
-import { useState } from 'react'
+import useFavoriteCats from '../../../pages/Favorite/model/useFavoriteCats.ts'
 
 interface CatCardProps {
   cat: Cat
 }
 
 export const CatCard = ({ cat }: CatCardProps) => {
-  const [likedCats, setLikedCats] = useState<string[]>(() => {
-    const savedLikes = localStorage.getItem('likedCats')
-    return savedLikes ? JSON.parse(savedLikes) : []
-  })
-  const isLiked = likedCats.includes(cat.id)
+  const { isLiked, addCatToFavorites, removeCatFromFavorites } =
+    useFavoriteCats()
 
   const handleLike = () => {
-    let updatedLikedCats: string[]
-
-    if (isLiked) {
-      updatedLikedCats = likedCats.filter((id) => id !== cat.id)
+    if (isLiked(cat.id)) {
+      removeCatFromFavorites(cat.id)
     } else {
-      updatedLikedCats = [...likedCats, cat.id]
+      addCatToFavorites(cat.id)
     }
-
-    setLikedCats(updatedLikedCats)
-    localStorage.setItem('likedCats', JSON.stringify(updatedLikedCats)) // Зберігаємо в локальному сховищі
   }
-
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
       <img
@@ -39,7 +30,7 @@ export const CatCard = ({ cat }: CatCardProps) => {
         </h3>
         <FaHeart
           onClick={handleLike}
-          className={`cursor-pointer ${isLiked ? 'text-red-500' : 'text-gray-500'}`}
+          className={`cursor-pointer ${isLiked(cat.id) ? 'text-red-500' : 'text-gray-500'}`}
         />
       </div>
     </div>
