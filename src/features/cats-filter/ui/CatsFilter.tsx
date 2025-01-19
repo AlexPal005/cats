@@ -21,6 +21,10 @@ export const CatsFilter = () => {
     useSelectedBreedStore()
 
   useEffect(() => {
+    clearSelectedBreed()
+  }, [clearSelectedBreed])
+
+  useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearchBreed(searchBreed)
     }, 1000)
