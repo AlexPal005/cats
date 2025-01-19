@@ -22,7 +22,7 @@ const getCats = async (
 export const useGetCats = (countOfCats?: number, breedId?: string) => {
   return useQuery({
     queryKey: ['cats', countOfCats, breedId],
-    queryFn: () => getCats(countOfCats || 10, breedId),
+    queryFn: () => getCats(countOfCats || 20, breedId),
     staleTime: 5 * 60 * 1000, //5 minutes
   })
 }
